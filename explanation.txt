@@ -1,0 +1,15 @@
+So I was given a Linux ELF file it was stripped which means the names of functions and variables were removed ,ki syit to run it it just returned access denied (needed the flag)
+First thing I did was search for some write-ups about this kind of challenge to understand how people approach them
+Then when I opened the file with objdump I found the main fct, but its logic wasn't really normal, It wasn't comparing the input with the flag character by character, Instead I found another function that seemed to work in a specific pattern
+
+From what I understood this function reads the program byte by byte each byte represents an opcode ,which is used to access a jump table moraha it executes the small instruction corresponding to that opcode goes back to the interpreter, reads the next byte and repeats the same thing
+
+So I started looking at the different opcode handlers to understand what each one does I found instructions PUSHI,PUSHIN,PUSHLEN,ADD,DECRYPt,CALL,PRINT.....
+
+After that ,I moved to the decryption part,first program was a wrapper containing PUSHI,DECRYPT,CALL,HALT bsh I found out that this same structure was repeated 99 times
+
+Since doing all these layers manually would take too much time I decided to automate the process(m title bayna)
+
+When I finally reached the actual program, I found a CHKACC instruc with a target value of 366
+
+The problem was that the number of possible combinations was huge so trying every possible input wasn't really an option ,also what I noticed was that each condition depended only on one character or two adjacent char ,started from left to right ,keeping track of the previous character and the current accumulated score ,calculated and saved the new possible states until the final score was exactly 366
